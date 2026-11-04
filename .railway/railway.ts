@@ -16,7 +16,8 @@ export default defineRailway(() => {
     build: { buildEnvironment: "V3", builder: "DOCKERFILE", dockerfilePath: "Dockerfile" },
     healthcheck: "/healthz",
     healthcheckTimeout: 300,
-    deploy: { restartPolicyType: "ON_FAILURE", restartPolicyMaxRetries: 3 },
+    // ON_FAILURE is Railway's canonical default; only the non-default retry cap is persisted.
+    deploy: { restartPolicyMaxRetries: 3 },
     replicas: { "us-east4-eqdc4a": 1 },
     volumeMounts: { "/data": cezarData },
   });
