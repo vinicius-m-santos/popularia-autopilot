@@ -10,6 +10,7 @@ steps:
   - id: implement
     name: Implement with OpenCode
     runner: opencode
+    model: deepseek/deepseek-flash
     prompt: >-
       Implement {{task}}. Read the previous step's handoff and verify its assumptions
       against the repository. Keep changes scoped, run relevant tests, and do not merge.
