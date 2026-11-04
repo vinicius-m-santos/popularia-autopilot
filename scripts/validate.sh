@@ -6,7 +6,7 @@ cd "${repo_root}"
 
 required=(
   Dockerfile
-  railway.json
+  .railway/railway.ts
   docker/cezar-entrypoint.sh
   docker/nginx.conf.template
   config/workspace-config.json
@@ -20,7 +20,7 @@ for path in "${required[@]}"; do
 done
 
 bash -n docker/cezar-entrypoint.sh scripts/smoke-test.sh
-node -e 'JSON.parse(require("fs").readFileSync("railway.json", "utf8")); JSON.parse(require("fs").readFileSync("config/workspace-config.json", "utf8")); JSON.parse(require("fs").readFileSync(".ai/cezar/config.json", "utf8"));'
+node -e 'JSON.parse(require("fs").readFileSync("config/workspace-config.json", "utf8")); JSON.parse(require("fs").readFileSync(".ai/cezar/config.json", "utf8"));'
 
 grep -q '"maxParallel": 2' config/workspace-config.json
 grep -q 'CEZ_AUTOMATIONS=0' Dockerfile
@@ -28,6 +28,8 @@ grep -q 'CEZ_REVIEW_GATE=1' Dockerfile
 grep -q 'auth_basic' docker/nginx.conf.template
 grep -q 'git diff --check' .ai/cezar/workflows/claude-plan-opencode.yml
 grep -q 'git diff --check' .ai/cezar/workflows/codex-plan-opencode.yml
+grep -q 'builder: "DOCKERFILE"' .railway/railway.ts
+grep -q 'volumeMounts: { "/data": cezarData }' .railway/railway.ts
 
 if rg -n '(sk-[A-Za-z0-9_-]{16,}|gh[pousr]_[A-Za-z0-9]{20,})' \
   --glob '!README.md' --glob '!.env.example' .; then

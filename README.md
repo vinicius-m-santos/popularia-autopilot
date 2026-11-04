@@ -66,7 +66,7 @@ Não habilite `CEZ_AGENT_ENV_FULL=1`. Ele entregaria todos os segredos do contai
 
 1. No serviço `popularia-autopilot`, monte um volume Railway em `/data`. Mantenha uma única réplica: serviços com volume não devem escalar horizontalmente.
 2. Cadastre as duas variáveis obrigatórias e, quando disponíveis, `GITHUB_TOKEN` e `DEEPSEEK_API_KEY` como secrets no painel Railway.
-3. O [railway.json](railway.json) seleciona o Dockerfile e configura `/healthz`, timeout e política de restart.
+3. O [.railway/railway.ts](.railway/railway.ts) usa o IaC nativo da Railway para selecionar o Dockerfile, preservar o volume `/data` e configurar `/healthz`, timeout, réplica e política de restart. As variáveis permanecem fora do IaC para não versionar segredos.
 4. Faça o deploy pelo repositório conectado ou localmente:
 
    ```bash
