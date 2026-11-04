@@ -1,0 +1,11 @@
+.git
+.railway
+.env
+.env.*
+!.env.example
+node_modules
+vendor
+var
+coverage
+dist
+*.log

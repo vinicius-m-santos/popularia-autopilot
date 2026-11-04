@@ -1,0 +1,16 @@
+{
+  "branding": {
+    "name": "Popularia Autopilot"
+  },
+  "browseRoot": "/data/workspaces",
+  "projectsDir": "/data/workspaces",
+  "resources": {
+    "maxParallel": 2,
+    "maxMonitoringSessions": 2,
+    "idleTimeoutMinutes": 15,
+    "monitoringWakeIntervalMinutes": 5,
+    "autoResumeOnUsageLimit": true,
+    "memoryLimitMb": null,
+    "worktreeRetentionDefault": 10
+  }
+}

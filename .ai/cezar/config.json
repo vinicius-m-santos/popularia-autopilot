@@ -1,0 +1,5 @@
+{
+  "defaultRunner": "opencode",
+  "plannerModel": "auto",
+  "worktreeRetention": 10
+}
