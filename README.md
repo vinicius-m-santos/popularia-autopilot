@@ -123,6 +123,8 @@ Para cada projeto Cezar:
 
 O Cezar nunca entrega o token Jira aos agentes; automações recebem uma capability temporária e restrita ao card vinculado.
 
+Para executar trabalho sobre um card, inicie a tarefa pela aba **Tracker** do projeto ou por uma automação Jira em Preview. Não peça ao runner para ler `JIRA_*` ou chamar Jira com `curl`: tarefas genéricas não recebem essas credenciais por segurança, e o contexto do card é fornecido pelo próprio Cezar.
+
 ## Workflows e merge
 
 Os workflows são arquivos YAML nativos do Cezar. Nenhum deles executa `git merge`, `gh pr merge` ou habilita merge automático. Draft PRs continuam sujeitos à revisão humana e às proteções do GitHub.

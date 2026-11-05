@@ -22,3 +22,11 @@ A resposta marcou `available: true` e apontou para o issue Jira esperado. O dom�
 ## Operação correta
 
 Não adicionar as variáveis `JIRA_*` à Railway. Para trocar ou corrigir a conexão, usar **Settings → Issue tracker** no projeto Cezar correspondente e então repetir a leitura de `POP-5`. As automações Jira devem permanecer sujeitas à revisão e ao review gate do Cezar.
+
+## Por que um runner pode receber 404
+
+Uma tarefa criada pelo composer como `quick-task` ou como workflow genérico não recebe as credenciais Jira do projeto. O runner deve consultar somente o contexto do card que o Cezar anexou à tarefa; ele não deve montar `JIRA_BASE_URL`, `JIRA_EMAIL` e `JIRA_API_TOKEN` nem executar `curl` diretamente contra Jira.
+
+Para trabalhar sobre um card Jira, abra o card pela aba **Tracker** do projeto, ou use uma automação Jira em modo Preview, e inicie a tarefa a partir desse contexto. Assim o Cezar encaminha a capability temporária e restrita ao card. O runner pode continuar sem esses nomes de variáveis no ambiente.
+
+A validação feita pelo agente dentro de um shell Codex/Claude não substitui a validação do adaptador: um `GET /rest/api/3/project` vazio ou um `GET /rest/api/3/issue/POP-5` 404 nesse shell indica que a chamada foi feita fora do contexto Jira do Cezar, não que a conexão persistida esteja inválida.
