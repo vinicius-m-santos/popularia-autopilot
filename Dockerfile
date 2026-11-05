@@ -65,10 +65,13 @@ RUN useradd --no-create-home --home-dir /data/home --shell /bin/bash --uid 10001
 COPY --chown=cezar:cezar .ai /opt/popularia-bootstrap/.ai
 COPY --chown=cezar:cezar config/bootstrap-README.md /opt/popularia-bootstrap/README.md
 COPY --chown=cezar:cezar config/workspace-config.json /opt/popularia-bootstrap-config.json
+COPY docker/patch-cezar-tracker-template.js /tmp/patch-cezar-tracker-template.js
 COPY docker/nginx.conf.template /etc/nginx/nginx.conf.template
 COPY docker/cezar-entrypoint.sh /usr/local/bin/cezar-entrypoint
 
-RUN chmod 0755 /usr/local/bin/cezar-entrypoint
+RUN node /tmp/patch-cezar-tracker-template.js \
+    && rm /tmp/patch-cezar-tracker-template.js \
+    && chmod 0755 /usr/local/bin/cezar-entrypoint
 
 EXPOSE 8080
 
