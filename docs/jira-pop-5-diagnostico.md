@@ -40,7 +40,7 @@ Uma tarefa criada pelo composer como `quick-task` ou como workflow genérico nã
 
 ## Prompt indevido em automações
 
-O pacote Cezar `0.18.0` também tinha um defeito no template de automações de tracker: ele anexava ao prompt uma instrução para o agente chamar a API Jira diretamente usando `JIRA_*`. Esse texto não vinha do workflow nem do usuário e era incompatível com o cofre/gateway usado por esta instalação. O Dockerfile aplica uma correção verificável durante o build (`docker/patch-cezar-tracker-template.js`), substituindo essa instrução pelo fluxo mediado `node "$CEZ_BIN" tracker read`.
+O pacote Cezar `0.18.0` também tinha um defeito no template de automações de tracker: ele anexava ao prompt uma instrução para o agente chamar a API Jira diretamente usando `JIRA_*`. Esse texto não vinha do workflow nem do usuário e era incompatível com o cofre/gateway usado por esta instalação. O Dockerfile agora compila o fork fixado do Cezar (`vinicius-m-santos/cezar`, commit `6d280bee`) que usa o fluxo mediado e fornece o comando `node "$CEZ_BIN" tracker read`.
 
 Após o deploy, a imagem foi validada sem expor credenciais: o template não contém mais `JIRA_BASE_URL` e contém a orientação mediada pelo Cezar; `/healthz` retornou sucesso.
 
