@@ -45,6 +45,14 @@ mkdir -p \
   /tmp/nginx/{client_body,proxy,fastcgi,uwsgi,scgi}
 chown -R cezar:cezar "${DATA_ROOT}" /run/cezar /tmp/nginx
 
+# Railway replaces the container PID namespace on deploy. Any owner.lock left by
+# the previous container is therefore an ephemeral stale lease, not user data.
+# Remove only cockpit lease files; keep config, credentials, runs and workspaces.
+if [[ -d "${CEZ_HOME:-/data/cezar}/runtime/cockpits" ]]; then
+  find "${CEZ_HOME:-/data/cezar}/runtime/cockpits" -mindepth 2 -maxdepth 2 \
+    -type f -name 'owner.lock' -delete
+fi
+
 if [[ ! -f "${CEZAR_CONFIG}" ]]; then
   install -o cezar -g cezar -m 0600 /opt/popularia-bootstrap-config.json "${CEZAR_CONFIG}"
 fi
