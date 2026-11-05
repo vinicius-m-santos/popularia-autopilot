@@ -111,6 +111,8 @@ Copie os workflows apropriados de `.ai/cezar/workflows/` para cada repositório 
 
 ## Jira
 
+O diagnóstico e a validação de leitura do card `POP-5` estão documentados em [docs/jira-pop-5-diagnostico.md](docs/jira-pop-5-diagnostico.md).
+
 Para cada projeto Cezar:
 
 1. Abra **Settings → Issue tracker → Configure Jira credentials**.
