@@ -12,7 +12,7 @@ RUN git clone --depth 1 "${CEZAR_REPO}" . \
     && git fetch --depth 1 origin "${CEZAR_COMMIT}" \
     && git checkout --detach "${CEZAR_COMMIT}" \
     && npm install --ignore-scripts --no-audit --no-fund \
-    && npm run build:server \
+    && npm run build \
     && npm pack -w @open-mercato/cezar --pack-destination /tmp
 
 FROM node:22.21.1-bookworm-slim
