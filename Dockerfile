@@ -1,6 +1,22 @@
+FROM node:22.21.1-bookworm-slim AS cezar-build
+
+ARG CEZAR_REPO=https://github.com/vinicius-m-santos/cezar.git
+ARG CEZAR_COMMIT=6d280bee4fd607554464a24be1276bf147960665
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/cezar-source
+RUN git clone --depth 1 "${CEZAR_REPO}" . \
+    && git fetch --depth 1 origin "${CEZAR_COMMIT}" \
+    && git checkout --detach "${CEZAR_COMMIT}" \
+    && npm install --ignore-scripts --no-audit --no-fund \
+    && npm run build:server \
+    && npm pack -w @open-mercato/cezar --pack-destination /tmp
+
 FROM node:22.21.1-bookworm-slim
 
-ARG CEZAR_VERSION=0.18.0
 ARG OPENCODE_VERSION=1.19.5
 ARG CODEX_VERSION=0.166.0
 ARG CLAUDE_CODE_VERSION=2.1.318
@@ -47,8 +63,9 @@ RUN apt-get update \
 
 # Cezar currently drives the OpenCode 1.x server protocol. Keep every CLI pinned
 # so a rebuild cannot silently change the orchestration or authentication surface.
+COPY --from=cezar-build /tmp/open-mercato-cezar-0.19.0.tgz /tmp/
 RUN npm install --global \
-      "cezar-run@${CEZAR_VERSION}" \
+      /tmp/open-mercato-cezar-0.19.0.tgz \
       "opencode-ai@${OPENCODE_VERSION}" \
       "@openai/codex@${CODEX_VERSION}" \
       "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" \
@@ -65,13 +82,10 @@ RUN useradd --no-create-home --home-dir /data/home --shell /bin/bash --uid 10001
 COPY --chown=cezar:cezar .ai /opt/popularia-bootstrap/.ai
 COPY --chown=cezar:cezar config/bootstrap-README.md /opt/popularia-bootstrap/README.md
 COPY --chown=cezar:cezar config/workspace-config.json /opt/popularia-bootstrap-config.json
-COPY docker/patch-cezar-tracker-template.js /tmp/patch-cezar-tracker-template.js
 COPY docker/nginx.conf.template /etc/nginx/nginx.conf.template
 COPY docker/cezar-entrypoint.sh /usr/local/bin/cezar-entrypoint
 
-RUN node /tmp/patch-cezar-tracker-template.js \
-    && rm /tmp/patch-cezar-tracker-template.js \
-    && chmod 0755 /usr/local/bin/cezar-entrypoint
+RUN chmod 0755 /usr/local/bin/cezar-entrypoint
 
 EXPOSE 8080
 
