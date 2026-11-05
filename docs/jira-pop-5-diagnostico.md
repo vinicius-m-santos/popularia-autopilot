@@ -19,6 +19,17 @@ A leitura foi feita pelo endpoint de tracker do Cezar, que usa o adaptador Jira 
 
 A resposta marcou `available: true` e apontou para o issue Jira esperado. O domínio utilizado foi `viniciusmdoss.atlassian.net`; nenhum e-mail, token ou valor secreto foi registrado.
 
+## Validação de transporte e autorização
+
+A conexão foi testada diretamente a partir do cofre do Cezar, sem revelar o token:
+
+| Transporte | `/myself` | `/rest/api/3/project` | `/rest/api/3/issue/POP-5` |
+|---|---:|---:|---:|
+| Site `viniciusmdoss.atlassian.net` | `401` | `200` com lista vazia | `404` |
+| Gateway Atlassian `api.atlassian.com/ex/jira/{cloudId}` | `200` | `200`, projeto POP encontrado | `200` |
+
+O gateway retornou a conta ativa (`accountId` e nome mascarados), o projeto POP (`id=10000`) e o card com descrição, status `Em andamento` e labels. Portanto, não há evidência de falta de permissão; o 404 era causado pelo transporte/base URL incorreto usado pela chamada direta. O adaptador nativo do Cezar já resolve `/_edge/tenant_info`, obtém o `cloudId` e usa o gateway com fallback controlado.
+
 ## Operação correta
 
 Não adicionar as variáveis `JIRA_*` à Railway. Para trocar ou corrigir a conexão, usar **Settings → Issue tracker** no projeto Cezar correspondente e então repetir a leitura de `POP-5`. As automações Jira devem permanecer sujeitas à revisão e ao review gate do Cezar.

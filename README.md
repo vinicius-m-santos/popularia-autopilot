@@ -125,6 +125,8 @@ O Cezar nunca entrega o token Jira aos agentes; automações recebem uma capabil
 
 Para executar trabalho sobre um card, inicie a tarefa pela aba **Tracker** do projeto ou por uma automação Jira em Preview. Não peça ao runner para ler `JIRA_*` ou chamar Jira com `curl`: tarefas genéricas não recebem essas credenciais por segurança, e o contexto do card é fornecido pelo próprio Cezar.
 
+Não use o domínio `*.atlassian.net/rest/api/3` como base para uma integração manual deste ambiente. O adaptador Jira do Cezar resolve o `cloudId` pelo tenant e usa o gateway `api.atlassian.com/ex/jira/{cloudId}`; chamadas diretas ao site podem retornar `401`, projetos vazios ou `404` mesmo com uma conexão válida.
+
 ## Workflows e merge
 
 Os workflows são arquivos YAML nativos do Cezar. Nenhum deles executa `git merge`, `gh pr merge` ou habilita merge automático. Draft PRs continuam sujeitos à revisão humana e às proteções do GitHub.
